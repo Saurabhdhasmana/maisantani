@@ -5,6 +5,7 @@ import './assets/css/bootstrap.min.css'
 import './assets/css/font-awesome.min.css'
 import './assets/css/select2.min.css'
 import './assets/css/flatpickr.min.css'
+
 import './assets/css/swiper-bundle.min.css'
 import './assets/css/style.css'
 import './assets/css/responsive.css'

@@ -2,6 +2,8 @@ import React from 'react';
 import { FaHome, FaUser, FaShoppingCart, FaHeart, FaShoppingBag } from 'react-icons/fa';
 import './BottomNavbar.css';
 
+
+
 const BottomNavbar = () => {
   return (
     <div className="bottom-navbar d-md-none">
