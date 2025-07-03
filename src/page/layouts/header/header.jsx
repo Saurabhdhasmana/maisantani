@@ -11,6 +11,7 @@ const Header = ({ onCartClick, cartCount = 2 }) => {
       
         setShowLogin(false);
     };
+
   return (
     <div className="ayur-menu-wrapper">
         <div className="container">
@@ -122,4 +123,7 @@ const Header = ({ onCartClick, cartCount = 2 }) => {
   );
 };
 
+
 export default Header;
+
+
