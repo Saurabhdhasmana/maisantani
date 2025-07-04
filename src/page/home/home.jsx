@@ -5,10 +5,6 @@ import { Navigation, Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-
-
-
-
 const bannerImages = [
     "/src/assets/images/booster.webp",
     "/src/assets/images/deepsleep.webp",
@@ -38,7 +34,7 @@ const Home = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            let res = await fetch("http://localhost:3000/api/product");
+            let res = await fetch("https://backend-darze-4.onrender.com/api/product");
             res = await res.json();
             SetHome(res);
         }
@@ -149,7 +145,7 @@ const Home = () => {
                                                  product.image
                                                 ? (product.image.startsWith("http")
                                                 ? product.image
-                                                : `http://localhost:3000/images/uploads/${product.image}`)
+                                                : `https://backend-darze-4.onrender.com/images/uploads/${product.image}`)
                                                 : "/src/assets/images/Bottels/Ashwagandha.png"
                                                 } alt="img" />
 
@@ -187,12 +183,7 @@ const Home = () => {
                             </div>
                         </div>
 
-
                      ))}
-
-
-                     
-
 
                         <div className="col-lg-12 col-md-12 col-sm-12">
                             <div className="ayur-tpro-viewbtn">

@@ -88,7 +88,7 @@ const ShopDetail = ({ onAddToCart }) => {
   useEffect(() => {
     // Get product id from URL (assuming /shop-detail/:id)
     const id = window.location.pathname.split('/').pop();
-    fetch(`http://localhost:3000/api/product/${id}`)
+    fetch(`https://backend-darze-4.onrender.com/api/product/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log('🎯 Product data:', data);
@@ -97,9 +97,9 @@ const ShopDetail = ({ onAddToCart }) => {
         
         // Handle images
         if (data && data.images && Array.isArray(data.images) && data.images.length > 0) {
-          setImages(data.images.map(img => img.startsWith('http') ? img : `http://localhost:3000/images/uploads/${img}`));
+          setImages(data.images.map(img => img.startsWith('http') ? img : `https://backend-darze-4.onrender.com/images/uploads/${img}`));
         } else if (data && data.image) {
-          setImages([data.image.startsWith('http') ? data.image : `http://localhost:3000/images/uploads/${data.image}`]);
+          setImages([data.image.startsWith('http') ? data.image : `https://backend-darze-4.onrender.com/images/uploads/${data.image}`]);
         }
         
         // Process variants for colors and sizes
@@ -416,7 +416,7 @@ const ShopDetail = ({ onAddToCart }) => {
                   >
                      <SwiperSlide key={0}>
                         <img
-                          src={`http://localhost:3000/images/uploads/${product?.image}`}
+                          src={`https://backend-darze-4.onrender.com/images/uploads/${product?.image}`}
                           alt={`Product ${0}`}
                           style={{
                             borderRadius: '12px',
@@ -449,7 +449,7 @@ const ShopDetail = ({ onAddToCart }) => {
                   >
                      <SwiperSlide key={0}>
                         <img
-                          src={`http://localhost:3000/images/uploads/${product?.image}`}
+                          src={`https://backend-darze-4.onrender.com/images/uploads/${product?.image}`}
                           alt={`Thumb 0`}
                           style={{
                             width: '100%',
