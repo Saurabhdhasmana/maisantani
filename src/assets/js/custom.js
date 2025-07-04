@@ -22,7 +22,7 @@ Project: Pure Ayurveda HTML
       // this.ayur_testimonial_slider();
       this.ayur_counter();
       this.ayur_quantity();
-      this.Select2();
+ 
       this.CheckoutPayment();
     },
     /*-------------- Pure_ayurveda Functions Calling -------------------------------------------------*/
@@ -246,14 +246,7 @@ Project: Pure Ayurveda HTML
       });
 
     },
-    Select2: function () {
-      $('.mySelect').select2({
-        placeholder: 'Select an option',
-        width: '100%',
-        dropdownAutoWidth: true,
-        minimumResultsForSearch: Infinity
-      });
-    },
+    
     // Checkout Payment			
     CheckoutPayment: function () {
       $("input[name$='checkout']").on("click", function () {
