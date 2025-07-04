@@ -204,7 +204,7 @@ const Shop = () => {
                                                                 product.image
                                                                     ? (product.image.startsWith("http")
                                                                         ? product.image
-                                                                        : `https://backend-darze-4.onrender.com/images/uploads/${product.image}`)
+                                                                        : `http://localhost:3000/images/uploads/${product.image}`)
                                                                     : "/src/assets/images/Bottels/Ashwagandha.png"
                                                             }
                                                             alt={product.name}
