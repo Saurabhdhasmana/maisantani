@@ -3,7 +3,7 @@
 // CSS Files
 import './assets/css/bootstrap.min.css'
 import './assets/css/font-awesome.min.css'
-import './assets/css/select2.min.css'
+// import './assets/css/select2.min.css'
 import './assets/css/flatpickr.min.css'
 
 import './assets/css/swiper-bundle.min.css'
@@ -12,13 +12,12 @@ import './assets/css/responsive.css'
 // JavaScript Files 
 import './assets/js/jquery.js'
 import './assets/js/bootstrap.bundle.min.js'
-import './assets/js/select2.min.js'
+// import './assets/js/select2.min.js'
 import './assets/js/SmoothScroll.min.js'
 import './assets/js/flatpickr.js'
 import './assets/js/vanilla-tilt.min.js'
 import './assets/js/swiper-bundle.min.js'
 import './assets/js/custom.js'
-
 
 // Routes and Components
 import React, { useState } from 'react'
