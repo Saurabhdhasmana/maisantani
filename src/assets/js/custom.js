@@ -247,19 +247,12 @@ Project: Pure Ayurveda HTML
 
     },
     Select2: function () {
-      // Check if jQuery and select2 are available
-      if (typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined') {
-        if ($('.mySelect').length) {
-          $('.mySelect').select2({
-            placeholder: 'Select an option',
-            width: '100%',
-            dropdownAutoWidth: true,
-            minimumResultsForSearch: Infinity
-          });
-        }
-      } else {
-        console.warn('jQuery or select2 not available');
-      }
+      $('.mySelect').select2({
+        placeholder: 'Select an option',
+        width: '100%',
+        dropdownAutoWidth: true,
+        minimumResultsForSearch: Infinity
+      });
     },
     // Checkout Payment			
     CheckoutPayment: function () {

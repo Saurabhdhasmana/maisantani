@@ -8,7 +8,7 @@ const Shop = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch("http://localhost:3000/api/product");
+                const res = await fetch("https://backend-darze-4.onrender.com/api/product");
                 const data = await res.json();
 
                 setProducts(data || []);
@@ -204,7 +204,7 @@ const Shop = () => {
                                                                 product.image
                                                                     ? (product.image.startsWith("http")
                                                                         ? product.image
-                                                                        : `http://localhost:3000/images/uploads/${product.image}`)
+                                                                        : `https://backend-darze-4.onrender.com/images/uploads/${product.image}`)
                                                                     : "/src/assets/images/Bottels/Ashwagandha.png"
                                                             }
                                                             alt={product.name}
