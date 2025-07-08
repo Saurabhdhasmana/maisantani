@@ -101,7 +101,6 @@ const ShopDetail = ({ onAddToCart }) => {
         } else if (data && data.image) {
           setImages([data.image.startsWith('http') ? data.image : `https://backend-darze-4.onrender.com/images/uploads/${data.image}`]);
         }
-        
         // Process variants for colors and sizes
         if (data && Array.isArray(data.variants) && data.variants.length > 0) {
           console.log('🔍 Processing variants:', data.variants);
