@@ -8,7 +8,7 @@ const Shop = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch("https://backend-darze-4.onrender.com/api/product");
+                const res = await fetch("https://digital-darzee-backend.onrender.com/product/getAllProduct");
                 const data = await res.json();
 
                 setProducts(data || []);
@@ -192,21 +192,15 @@ const Shop = () => {
                                     {/* Product grid from backend */}
                                     {loading ? (
                                         <p>Loading...</p>
-                                    ) : products.length === 0 ? (
+                                    ) : products?.data?.products.length === 0 ? (
                                         <p>No products found.</p>
                                     ) : (
-                                        products.map((product) => (
+                                        products?.data?.products.map((product) => (
                                             <div className="col-lg-4 col-md-6 col-sm-6" key={product._id}>
                                                 <div className="ayur-tpro-box ayur-shoppro-sing">
                                                     <div className="ayur-tpro-img">
                                                         <img
-                                                            src={
-                                                                product.image
-                                                                    ? (product.image.startsWith("http")
-                                                                        ? product.image
-                                                                        : `https://backend-darze-4.onrender.com/images/uploads/${product.image}`)
-                                                                    : "/src/assets/images/Bottels/Ashwagandha.png"
-                                                            }
+                                                            src={product.productImage}
                                                             alt={product.name}
                                                         />
                                                     </div>
@@ -214,7 +208,7 @@ const Shop = () => {
                                                         <h3>{product.name}</h3>
                                                         <div className="ayur-tpro-price">
                                                             <p>
-                                                                <del>${product?.mrpPrice}</del>${product?.salePrice}
+                                                                <del>${product?.price}</del>${product?.saleprice}
                                                             </p>
                                                             <div className="ayur-tpro-star">
                                                                 <img src="/src/assets/images/star-icon.png" alt="star" />
@@ -222,7 +216,7 @@ const Shop = () => {
                                                             </div>
                                                         </div>
                                                         <div className="ayur-tpro-btn">
-                                                            <a href="cart.html" className="ayur-btn">
+                                                            <Link to={`/shop-detail/${product?._id}`} className="ayur-btn">
                                                                 <span>
                                                                     <svg
                                                                         width="20"
@@ -238,7 +232,7 @@ const Shop = () => {
                                                                     </svg>
                                                                 </span>
                                                                 Add to Cart
-                                                            </a>
+                                                            </Link>
                                                         </div>
                                                     </div>
                                                 </div>

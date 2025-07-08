@@ -85,22 +85,35 @@ const ShopDetail = ({ onAddToCart }) => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedVariant, setSelectedVariant] = useState(null);
 
+
   useEffect(() => {
     // Get product id from URL (assuming /shop-detail/:id)
     const id = window.location.pathname.split('/').pop();
-    fetch(`https://backend-darze-4.onrender.com/api/product/${id}`)
+    fetch(`https://digital-darzee-backend.onrender.com/product/product/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log('🎯 Product data:', data);
-        console.log('🎯 Variants data:', data?.variants);
+        console.log('🎯 Product data is:', data);
+        // Handle images FIRST, then setProduct
+        if (data && data.data && Array.isArray(data.data.benefitImages) && data.data.benefitImages.length > 0) {
+          setImages(
+            data.data.benefitImages.map(img =>
+              img.startsWith('http')
+                ? img
+                : "not found"
+            )
+          );
+        } else if (data && data.data && data.data.productImage) {
+          setImages([
+            data.data.productImage.startsWith('http')
+              ? data.data.productImage
+              :"not found"
+          ]);
+        }
+<<<<<<< HEAD
+=======
         setProduct(data);
         
-        // Handle images
-        if (data && data.images && Array.isArray(data.images) && data.images.length > 0) {
-          setImages(data.images.map(img => img.startsWith('http') ? img : `https://backend-darze-4.onrender.com/images/uploads/${img}`));
-        } else if (data && data.image) {
-          setImages([data.image.startsWith('http') ? data.image : `https://backend-darze-4.onrender.com/images/uploads/${data.image}`]);
-        }
+>>>>>>> da73f2c8a497faefdc1d8223cec689b02f4fc09d
         // Process variants for colors and sizes
         if (data && Array.isArray(data.variants) && data.variants.length > 0) {
           console.log('🔍 Processing variants:', data.variants);
@@ -415,7 +428,7 @@ const ShopDetail = ({ onAddToCart }) => {
                   >
                      <SwiperSlide key={0}>
                         <img
-                          src={`https://backend-darze-4.onrender.com/images/uploads/${product?.image}`}
+                          src={`${product?.data?.productImage}`}
                           alt={`Product ${0}`}
                           style={{
                             borderRadius: '12px',
@@ -448,7 +461,7 @@ const ShopDetail = ({ onAddToCart }) => {
                   >
                      <SwiperSlide key={0}>
                         <img
-                          src={`https://backend-darze-4.onrender.com/images/uploads/${product?.image}`}
+                          src={`${product?.data?.productImage}`}
                           alt={`Thumb 0`}
                           style={{
                             width: '100%',
@@ -482,7 +495,7 @@ const ShopDetail = ({ onAddToCart }) => {
               {/* Product Info */}
               <div className="col-md-6">
                 <div className="product-info">
-                  <h2 className="product-title">{product?.name || 'Product'}</h2>
+                  <h2 className="product-title">{product?.data?.name || 'Product'}</h2>
                   <div className="product-rating">
                     <i className="fa fa-star"></i>
                     <i className="fa fa-star"></i>
@@ -495,19 +508,19 @@ const ShopDetail = ({ onAddToCart }) => {
                   </div>
                   <div className="product-price">
                     <div className="price">
-                      ${product?.salePrice}
-                      {product?.mrpPrice && (
+                      ${product?.data?.saleprice}
+                      {product?.data?.price && (
                         <del style={{ fontSize: '15px', color: '#b0b0b0', marginLeft: 8 }}>
-                          ${product.mrpPrice}
+                          ${product?.data?.price}
                         </del>
                       )}
-                      {product?.discount && (
-                        <span className="discount" style={{marginLeft:8}}>{product.discount}</span>
+                      {product?.data?.discount && (
+                        <span className="discount" style={{marginLeft:8}}>{product?.data?.discount}</span>
                       )}
                     </div>
                   </div>
                   <p className="product-desc mb-3">
-                    {product?.descriptionShort || 'No description available.'}
+                    {product?.data?.title || 'No description available.'}
                   </p>
                   <div className="product-options mb-3">
                     {/* Color */}
@@ -885,21 +898,16 @@ const ShopDetail = ({ onAddToCart }) => {
                     <div className="ayur-product-desc mb-3">
                       <h4 className="fw-bold">🌿 Ashwagandha – The Natural Secret of Strength, Balance & Wellness</h4>
                       <p>
-                        Ashwagandha, also known as "Indian Ginseng," is an ancient Ayurvedic herb that helps restore 
-                        physical and mental well-being.
-                        <br />
-                        Masanatani’s Ashwagandha is made from 100% natural, chemical-free, and premium-quality roots.
-It’s a pure and powerful way<br/> to bring balance, energy, and calm into your daily life.
+                        {product?.data?.description}
+                     
                        
                       </p>
                       <div className='pt-3'>
                         <h4 className="fw-bold">Relieve Stress and Fatigue Naturally</h4>
                       <p>
-                        Ashwagandha is a powerful adaptogen that helps reduce cortisol – the body’s stress hormone. 
-                        Daily use promotes calmness,<br /> better sleep, and mental clarity. 
-                        Masanatani's Ashwagandha is your natural way to unwind and stay centered in a hectic lifestyle.
-                        
                        
+                        
+                    
                       </p>
                       </div>
                       <div
