@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import React, { useState, useRef, useEffect } from 'react';
 import '../shop_detail/shop_detail.css';
 import { Link } from 'react-router-dom';
@@ -110,15 +110,11 @@ const ShopDetail = ({ onAddToCart }) => {
               : "not found"
           ]);
         }
-<<<<<<< HEAD
-=======
-        setProduct(data);
-<<<<<<< HEAD
 
-=======
+        setProduct(data);
+
         
->>>>>>> da73f2c8a497faefdc1d8223cec689b02f4fc09d
->>>>>>> 09bb3cccad7c6ca1f9b46e8c0678e3b944c25026
+
         // Process variants for colors and sizes
         if (data && Array.isArray(data.variants) && data.variants.length > 0) {
           console.log('🔍 Processing variants:', data.variants);
@@ -1525,5 +1521,5 @@ const ShopDetail = ({ onAddToCart }) => {
 };
 
 export default ShopDetail;
-=======
->>>>>>> a830ae470ec743c7800e2cdf9449aea1ef15aad0
+
+
