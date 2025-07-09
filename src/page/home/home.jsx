@@ -87,7 +87,6 @@ const Home = () => {
                     ))}
                 </Swiper>
             </div>
-
             <div className="ayur-care-slider-wrapper pt-5 pb-5">
                 <div className="container-fluid">
                     <div className="ayur-care-slider-sec">
@@ -122,14 +121,9 @@ const Home = () => {
                                 </SwiperSlide>
                             ))}
                         </Swiper>
-
-                        {/* Optional custom arrows (can be activated if needed) */}
-                        {/* <div className="swiper-button-prev" />
-          <div className="swiper-button-next" /> */}
                     </div>
                 </div>
             </div>
-
             <div className="ayur-bgcover ayur-topproduct-sec">
                 <div className="container">
                     <div className="row">
@@ -153,7 +147,6 @@ const Home = () => {
                                             }
                                             alt="img"
                                         />
-
                                         <div className="ayur-tpro-sale">
                                             <p>Sale</p>
                                             <div className="ayur-tpro-like">

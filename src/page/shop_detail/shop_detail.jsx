@@ -109,8 +109,15 @@ const ShopDetail = ({ onAddToCart }) => {
               : "not found"
           ]);
         }
+<<<<<<< HEAD
+=======
         setProduct(data);
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> da73f2c8a497faefdc1d8223cec689b02f4fc09d
+>>>>>>> 09bb3cccad7c6ca1f9b46e8c0678e3b944c25026
         // Process variants for colors and sizes
         if (data && Array.isArray(data.variants) && data.variants.length > 0) {
           console.log('🔍 Processing variants:', data.variants);
