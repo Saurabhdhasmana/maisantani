@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { useCart } from '../../context/CartContext';
 import { Link } from "react-router-dom";
@@ -267,3 +268,5 @@ const Checkout = () => {
 };
 
 export default Checkout;
+=======
+>>>>>>> a830ae470ec743c7800e2cdf9449aea1ef15aad0

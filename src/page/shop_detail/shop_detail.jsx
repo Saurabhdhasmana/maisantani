@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useRef, useEffect } from 'react';
 import '../shop_detail/shop_detail.css';
 import { Link } from 'react-router-dom';
@@ -1524,3 +1525,5 @@ const ShopDetail = ({ onAddToCart }) => {
 };
 
 export default ShopDetail;
+=======
+>>>>>>> a830ae470ec743c7800e2cdf9449aea1ef15aad0

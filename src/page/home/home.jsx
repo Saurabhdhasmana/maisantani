@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useEffect, React, useState } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -501,3 +502,5 @@ const Home = () => {
 };
 
 export default Home;
+=======
+>>>>>>> a830ae470ec743c7800e2cdf9449aea1ef15aad0

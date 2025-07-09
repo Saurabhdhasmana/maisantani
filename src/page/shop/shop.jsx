@@ -8,7 +8,11 @@ const Shop = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+<<<<<<< HEAD
                 const res = await fetch("https://mai-santani-backend-new.onrender.com/product/getAllProduct");
+=======
+                const res = await fetch("http://localhost:4000/product/getAllProduct");
+>>>>>>> a830ae470ec743c7800e2cdf9449aea1ef15aad0
                 const data = await res.json();
 
                 setProducts(data || []);
