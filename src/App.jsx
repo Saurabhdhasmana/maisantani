@@ -21,7 +21,7 @@ import './assets/js/custom.js'
 
 
 // Routes and Components
-import React, { useState } from 'react'
+import React from 'react'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -37,56 +37,28 @@ import Shop_Detail from './page/shop_detail/shop_detail.jsx'
 import Blog_Detail from './page/blog_detail/blog_detail.jsx'
 import Profile from './page/profile/profile.jsx'
 import CartModal from './components/CartModal/CartModal';
+import { CartProvider, useCart } from './context/CartContext';
 import Cart from './page/Cart/cart.jsx'
 import ScrollToTop from './page/ScrollToTop/ScrollToTop.jsx'
 
-const dummyCartItems = [
-  { id: 1, name: 'Ashwagandha', price: 299, qty: 1, image: '/src/assets/images/Bottels/Ashwagandha.png' },
-  { id: 2, name: 'Dard Nivrak', price: 199, qty: 2, image: '/src/assets/images/Bottels/Dard nivrak.png' }
-];
-const App = () => {
-const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState(dummyCartItems);
+function AppContent() {
+  const [isCartOpen, setIsCartOpen] = React.useState(false);
+  const { cartItems, removeItemFromCart, updateQty, addItemToCart: addToCartContext } = useCart();
 
   const toggleCartModal = () => setIsCartOpen(prev => !prev);
 
-  // Remove item function
-  const handleRemoveItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  // Jab bhi add to cart ho, modal bhi open ho
+  const addItemToCart = (item) => {
+    addToCartContext(item);
+    setIsCartOpen(true);
   };
-  const handleQtyChange = (id, qty) => {
-  setCartItems(cartItems =>
-    cartItems.map(item =>
-      item.id === id ? { ...item, qty: qty > 0 ? qty : 1 } : item
-    )
-  );
-};
-const addItemToCart = (newItem) => {
-  setCartItems(prevItems => {
-    const existing = prevItems.find(item => item.id === newItem.id);
-    if (existing) {
-      // agar item already hai, toh qty badhao
-      return prevItems.map(item =>
-        item.id === newItem.id ? { ...item, qty: item.qty + 1 } : item
-      );
-    } else {
-      // agar new item hai, toh add karo
-      return [...prevItems, { ...newItem, qty: 1 }];
-    }
-  });
-  setIsCartOpen(true); // Modal open karo
-};
-  return(
-     <Router>
+
+  return (
+    <Router>
       <ScrollToTop />
       <Header onCartClick={toggleCartModal} cartCount={cartItems.length} />
       {isCartOpen && (
-         <CartModal
-            onClose={toggleCartModal}
-            cartItems={cartItems}
-            onRemove={handleRemoveItem}
-            onQtyChange={handleQtyChange}
-          />
+        <CartModal onClose={toggleCartModal} />
       )}
 
       <Routes>
@@ -96,7 +68,7 @@ const addItemToCart = (newItem) => {
         <Route path="/blog" element={<Blog />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/shop-detail/:id" element={<Shop_Detail onAddToCart={addItemToCart} />}/>
+        <Route path="/shop-detail/:id" element={<Shop_Detail onAddToCart={addItemToCart} />} />
         <Route path="/blog-detail" element={<Blog_Detail />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/cart" element={<Cart />} />
@@ -108,4 +80,11 @@ const addItemToCart = (newItem) => {
     </Router>
   );
 }
+
+const App = () => (
+  <CartProvider>
+    <AppContent />
+  </CartProvider>
+);
+
 export default App;

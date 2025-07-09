@@ -1,8 +1,10 @@
 import React from 'react';
+import { useCart } from '../../context/CartContext';
 import './CartModal.css';
 import { Link } from 'react-router-dom';
 
-const CartModal = ({ onClose, cartItems, onRemove, onQtyChange }) => {
+const CartModal = ({ onClose }) => {
+  const { cartItems, removeItemFromCart, updateQty } = useCart();
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * (item.qty || 1), 0);
 
   return (
@@ -28,12 +30,12 @@ const CartModal = ({ onClose, cartItems, onRemove, onQtyChange }) => {
                       <span className="cart-item-name">{item.name}</span>
                       <span className="cart-item-price">₹{item.price}</span>
                       <div className="cart-item-qty">
-                        <button onClick={() => onQtyChange(item.id, item.qty - 1)} disabled={item.qty <= 1}>-</button>
+                        <button onClick={() => updateQty(item.id, item.qty - 1)} disabled={item.qty <= 1}>-</button>
                         <span>{item.qty}</span>
-                        <button onClick={() => onQtyChange(item.id, item.qty + 1)}>+</button>
+                        <button onClick={() => updateQty(item.id, item.qty + 1)}>+</button>
                       </div>
                     </div>
-                    <button className="cart-item-remove" onClick={() => onRemove(item.id)}>×</button>
+                    <button className="cart-item-remove" onClick={() => removeItemFromCart(item.id)}>×</button>
                   </li>
                 ))}
               </ul>

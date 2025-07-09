@@ -34,8 +34,8 @@ const Home = () => {
     const [attribute,setAttribute] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            let res = await fetch("https://digital-darzee-backend.onrender.com/product/getAllProduct");
-            let res1= await fetch("https://digital-darzee-backend.onrender.com/attributes/getAllAttributes");
+            let res = await fetch("https://mai-santani-backend-new.onrender.com/product/getAllProduct");
+            let res1= await fetch("https://mai-santani-backend-new.onrender.com/attributes/getAllAttributes");
 
             res = await res.json();
             SetHome(res);

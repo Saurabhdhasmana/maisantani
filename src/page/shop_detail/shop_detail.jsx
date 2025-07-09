@@ -89,7 +89,7 @@ const ShopDetail = ({ onAddToCart }) => {
   useEffect(() => {
     // Get product id from URL (assuming /shop-detail/:id)
     const id = window.location.pathname.split('/').pop();
-    fetch(`https://digital-darzee-backend.onrender.com/product/product/${id}`)
+    fetch(`https://mai-santani-backend-new.onrender.com/product/product/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log('🎯 Product data is:', data);
@@ -106,50 +106,50 @@ const ShopDetail = ({ onAddToCart }) => {
           setImages([
             data.data.productImage.startsWith('http')
               ? data.data.productImage
-              :"not found"
+              : "not found"
           ]);
         }
         setProduct(data);
-        
+
         // Process variants for colors and sizes
         if (data && Array.isArray(data.variants) && data.variants.length > 0) {
           console.log('🔍 Processing variants:', data.variants);
           const colors = [];
           const sizes = [];
-          
+
           data.variants.forEach((variant, index) => {
             console.log(`🔍 Variant ${index}:`, variant);
             console.log(`🔍 Variant ${index} keys:`, Object.keys(variant));
-            
+
             // Check variantValues array - this is where your color/size data is!
             if (Array.isArray(variant.variantValues) && variant.variantValues.length >= 2) {
               console.log('✅ Found variantValues:', variant.variantValues);
-              
+
               // Assuming first value is color, second is size
               const color = variant.variantValues[0];
               const size = variant.variantValues[1];
-              
+
               console.log('✅ Extracted Color:', color);
               console.log('✅ Extracted Size:', size);
-              
+
               // Add color if not already exists
               if (color && !colors.some(c => c.value === color.toLowerCase())) {
-                colors.push({ 
-                  name: color, 
-                  value: color.toLowerCase() 
+                colors.push({
+                  name: color,
+                  value: color.toLowerCase()
                 });
                 console.log('✅ Added color:', color);
               }
-              
+
               // Add size if not already exists
               if (size && !sizes.some(s => s.name === size.toLowerCase())) {
-                sizes.push({ 
-                  name: size.toLowerCase() 
+                sizes.push({
+                  name: size.toLowerCase()
                 });
                 console.log('✅ Added size:', size);
               }
             }
-            
+
             // Also check variantName for additional parsing
             if (variant.variantName) {
               console.log('🔍 Parsing variantName:', variant.variantName);
@@ -158,39 +158,39 @@ const ShopDetail = ({ onAddToCart }) => {
               if (parts.length >= 2) {
                 const nameColor = parts[0];
                 const nameSize = parts[1];
-                
+
                 if (nameColor && !colors.some(c => c.value === nameColor.toLowerCase())) {
-                  colors.push({ 
-                    name: nameColor, 
+                  colors.push({
+                    name: nameColor,
                     value: nameColor.toLowerCase(),
                   });
                   console.log('✅ Added color from name:', nameColor);
                 }
-              
+
                 if (nameSize && !sizes.some(s => s.name === nameSize.toLowerCase())) {
-                  sizes.push({ 
-                    name: nameSize.toLowerCase() 
+                  sizes.push({
+                    name: nameSize.toLowerCase()
                   });
                   console.log('✅ Added size from name:', nameSize);
                 }
               }
             }
-            
+
             // Keep old logic for other possible structures
             Object.keys(variant).forEach(key => {
               const value = variant[key];
-              
+
               // Check for color-related properties
               if (key.toLowerCase().includes('color') || key.toLowerCase().includes('colour')) {
                 console.log('✅ Found color property:', key, '=', value);
                 if (value && !colors.some(c => c.value === value.toLowerCase())) {
-                  colors.push({ 
-                    name: value, 
-                    value: value.toLowerCase() 
+                  colors.push({
+                    name: value,
+                    value: value.toLowerCase()
                   });
                 }
               }
-              
+
               // Check for size-related properties
               if (key.toLowerCase().includes('size')) {
                 console.log('✅ Found size property:', key, '=', value);
@@ -199,7 +199,7 @@ const ShopDetail = ({ onAddToCart }) => {
                 }
               }
             });
-            
+
             // Also check attributes array if exists
             if (Array.isArray(variant.attributes)) {
               console.log('🔍 Attributes array:', variant.attributes);
@@ -209,9 +209,9 @@ const ShopDetail = ({ onAddToCart }) => {
                   if (attr.name.toLowerCase().includes("color") || attr.name.toLowerCase().includes("colour")) {
                     console.log('✅ Found color in attributes:', attr.value);
                     if (!colors.some(c => c.value === attr.value.toLowerCase())) {
-                      colors.push({ 
-                        name: attr.value, 
-                        value: attr.value.toLowerCase() 
+                      colors.push({
+                        name: attr.value,
+                        value: attr.value.toLowerCase()
                       });
                     }
                   }
@@ -225,10 +225,10 @@ const ShopDetail = ({ onAddToCart }) => {
               });
             }
           });
-          
+
           console.log('🎯 Final colors extracted:', colors);
           console.log('🎯 Final sizes extracted:', sizes);
-          
+
           // Set colors
           if (colors.length > 0) {
             setColorOptions(colors);
@@ -244,7 +244,7 @@ const ShopDetail = ({ onAddToCart }) => {
             setColorOptions(fallbackColors);
             setSelectedColor(fallbackColors[0].value);
           }
-          
+
           // Set sizes
           if (sizes.length > 0) {
             setSizeOptions(sizes);
@@ -280,7 +280,7 @@ const ShopDetail = ({ onAddToCart }) => {
           const variantSize = variant.variantValues[1].toLowerCase();
           return variantColor === selectedColor && variantSize === selectedSize;
         }
-        
+
         // Check variantName
         if (variant.variantName) {
           const parts = variant.variantName.toLowerCase().split(' ');
@@ -290,11 +290,11 @@ const ShopDetail = ({ onAddToCart }) => {
             return nameColor === selectedColor && nameSize === selectedSize;
           }
         }
-        
+
         // Check direct properties
         const colorMatch = variant.color && variant.color.toLowerCase() === selectedColor;
         const sizeMatch = variant.size && variant.size.toLowerCase() === selectedSize;
-        
+
         // Also check attributes if they exist
         let attrColorMatch = false, attrSizeMatch = false;
         if (Array.isArray(variant.attributes)) {
@@ -305,7 +305,7 @@ const ShopDetail = ({ onAddToCart }) => {
             }
           });
         }
-        
+
         return (colorMatch || attrColorMatch) && (sizeMatch || attrSizeMatch);
       });
       setSelectedVariant(found || null);
@@ -336,7 +336,7 @@ const ShopDetail = ({ onAddToCart }) => {
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-  
+
   const [quantity, setQuantity] = useState(1);
 
   const handleColorChange = (color) => setSelectedColor(color);
@@ -358,8 +358,8 @@ const ShopDetail = ({ onAddToCart }) => {
   const avgRating =
     reviews.length > 0
       ? (
-          reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-        ).toFixed(1)
+        reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+      ).toFixed(1)
       : '0.0';
 
   const handleSubmit = (e) => {
@@ -384,7 +384,7 @@ const ShopDetail = ({ onAddToCart }) => {
     <div>
       {/* Dynamic product loading */}
       {!product ? (
-        <div style={{textAlign:'center',padding:'2rem'}}>Loading product...</div>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>Loading product...</div>
       ) : null}
       <div className="ayur-bread-section">
         <div className="ayur-breadcrumb-wrapper">
@@ -423,17 +423,17 @@ const ShopDetail = ({ onAddToCart }) => {
                     thumbs={{ swiper: thumbsSwiper }}
                     className="main-swiper"
                   >
-                     <SwiperSlide key={0}>
-                        <img
-                          src={`${product?.data?.productImage}`}
-                          alt={`Product ${0}`}
-                          style={{
-                            borderRadius: '12px',
-                            height: '100%',
-                            width: '100%',
-                          }}
-                        />
-                      </SwiperSlide>
+                    <SwiperSlide key={0}>
+                      <img
+                        src={`${product?.data?.productImage}`}
+                        alt={`Product ${0}`}
+                        style={{
+                          borderRadius: '12px',
+                          height: '100%',
+                          width: '100%',
+                        }}
+                      />
+                    </SwiperSlide>
                     {images.map((img, idx) => (
                       <SwiperSlide key={idx}>
                         <img
@@ -456,20 +456,20 @@ const ShopDetail = ({ onAddToCart }) => {
                     modules={[Thumbs]}
                     className="product-thumbnails"
                   >
-                     <SwiperSlide key={0}>
-                        <img
-                          src={`${product?.data?.productImage}`}
-                          alt={`Thumb 0`}
-                          style={{
-                            width: '100%',
-                            height: '100px',
-                            objectFit: 'cover',
-                            borderRadius: '8px',
-                            display: 'block',
-                            margin: '0 auto',
-                          }}
-                        />
-                      </SwiperSlide>
+                    <SwiperSlide key={0}>
+                      <img
+                        src={`${product?.data?.productImage}`}
+                        alt={`Thumb 0`}
+                        style={{
+                          width: '100%',
+                          height: '100px',
+                          objectFit: 'cover',
+                          borderRadius: '8px',
+                          display: 'block',
+                          margin: '0 auto',
+                        }}
+                      />
+                    </SwiperSlide>
                     {images.map((img, idx) => (
                       <SwiperSlide key={idx}>
                         <img
@@ -512,7 +512,7 @@ const ShopDetail = ({ onAddToCart }) => {
                         </del>
                       )}
                       {product?.data?.discount && (
-                        <span className="discount" style={{marginLeft:8}}>{product?.data?.discount}</span>
+                        <span className="discount" style={{ marginLeft: 8 }}>{product?.data?.discount}</span>
                       )}
                     </div>
                   </div>
@@ -668,10 +668,24 @@ const ShopDetail = ({ onAddToCart }) => {
                           </button>
                         </div>
                         <div className="col-8 col-md-9">
-                          <button className="ayur-btn w-100" onClick={() => onAddToCart(product)}>
+                          <button
+                            className="ayur-btn w-100"
+                            onClick={() => {
+                              const item = {
+                                id: product?.data?._id,
+                                name: product?.data?.name,
+                                price: product?.data?.saleprice,
+                                image: product?.data?.productImage,
+                                qty: quantity,
+                                color: selectedColor,
+                                size: selectedSize,
+                              };
+                              console.log('🛒 Add to Cart:', item);
+                              onAddToCart(item);
+                            }}
+                          >
                             ADD TO CART – $51.89
                           </button>
-                    
                         </div>
                       </div>
                     </div>
@@ -896,16 +910,16 @@ const ShopDetail = ({ onAddToCart }) => {
                       <h4 className="fw-bold">🌿 Ashwagandha – The Natural Secret of Strength, Balance & Wellness</h4>
                       <p>
                         {product?.data?.description}
-                     
-                       
+
+
                       </p>
                       <div className='pt-3'>
                         <h4 className="fw-bold">Relieve Stress and Fatigue Naturally</h4>
-                      <p>
-                       
-                        
-                    
-                      </p>
+                        <p>
+
+
+
+                        </p>
                       </div>
                       <div
                         style={{
@@ -985,7 +999,7 @@ const ShopDetail = ({ onAddToCart }) => {
                   </div>
                 </div>
               </div>
-        </div>
+            </div>
           </div>
         </div>
 
@@ -1134,9 +1148,8 @@ const ShopDetail = ({ onAddToCart }) => {
                             style={{
                               background: '#ffc107',
                               width: reviews.length
-                                ? `${
-                                    (ratingsCount[idx] / reviews.length) * 100
-                                  }%`
+                                ? `${(ratingsCount[idx] / reviews.length) * 100
+                                }%`
                                 : '0%',
                               height: 8,
                               borderRadius: 4,
@@ -1490,7 +1503,7 @@ const ShopDetail = ({ onAddToCart }) => {
           <img src="/src/assets/images/bg-leaf3.png" alt="img" />
         </div>
       </div>
-          
+
       {/* <CartModal
         show={showCartModal}
         onClose={() => setShowCartModal(false)}
