@@ -8,7 +8,7 @@ const Shop = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await fetch("https://digital-darzee-backend.onrender.com/product/getAllProduct");
+                const res = await fetch("http://localhost:4000/product/getAllProduct");
                 const data = await res.json();
 
                 setProducts(data || []);

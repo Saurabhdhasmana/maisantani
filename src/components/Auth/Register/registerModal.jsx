@@ -1,70 +1,121 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { userSignup } from "../../../utils";
 import "../Login/login.css";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const RegisterModal = ({ show, onClose, onLoginOpen }) => {
   if (!show) return null;
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'user'
+  });
+
   const [showPassword, setShowPassword] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-   
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.username.trim()) newErrors.username = 'Username is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const registerData = {
-      name,
-      email,
-      password,
-    };
-
+    
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
+    
     try {
-      const response = await axios.post("http://localhost:3000/api/user/signup", registerData);
-      const errorMsg = response.data?.error || response.data?.message || "";
-      if (response.data && response.data.user && response.data.message) {
-        toast.success(response.data.message);
-        if (onClose) onClose();
-        setTimeout(() => {
-          if (onLoginOpen) onLoginOpen();
-        }, 0);
-      } else if (errorMsg.toLowerCase().includes('user already exists')) {
-        toast.info("Account already exists. Please login.");
-        if (onClose) onClose();
-        setTimeout(() => {
-          if (onLoginOpen) onLoginOpen();
-        }, 0);
+      const payload = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      };
+      
+      const response = await userSignup(payload);
+      
+      if (response.success) {
+        toast.success('Registration successful!', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true
+        });
+        
+        // Close register modal and open login with prefilled data
+        onClose();
+        onLoginOpen({
+          prefilledEmail: formData.email,
+          prefilledPassword: formData.password
+        });
       } else {
-        toast.error(errorMsg || "Registration failed");
+        toast.error(response.message || 'Registration failed', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true
+        });
       }
     } catch (error) {
-      const errMsg = error.response?.data?.error || error.response?.data?.message || "Registration failed";
-      if (errMsg.toLowerCase().includes('user already exists')) {
-        toast.info("Account already exists. Please login.");
-        if (onClose) onClose();
-        setTimeout(() => {
-          if (onLoginOpen) onLoginOpen();
-        }, 0);
-      } else {
-        toast.error(errMsg);
+      let errorMessage = 'Registration failed. Please try again.';
+      if (error.response?.data?.error?.includes('E11000')) {
+        errorMessage = 'Username or email already exists';
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
       }
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    // Reset fields
-    setName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
   };
 
   return (
-    <div>
+    <div className="modal-overlay">
       <div className="modal fade show" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
         <div className="modal-dialog modal-lg modal-dialog-centered">
           <div className="modal-content p-0">
@@ -95,12 +146,12 @@ const RegisterModal = ({ show, onClose, onLoginOpen }) => {
                   }}
                 >
                   <button
-                type="button"
-                className="btn-close"
-                aria-label="Close"
-                onClick={onClose}
-                style={{position: "absolute", top: "10px", right: "10px", zIndex: 1000 }}
-              ></button>
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    onClick={onClose}
+                    style={{position: "absolute", top: "10px", right: "10px", zIndex: 1000 }}
+                  ></button>
                   <div className="ayur-login-section p-5">
                     <div className="ayur-login-head mb-3 h-100 text-center">
                       <h2 className="fw-bold">Create Account <span className="h-sanatani">Mai Sanatani</span></h2>
@@ -110,32 +161,34 @@ const RegisterModal = ({ show, onClose, onLoginOpen }) => {
                     </div>
 
                     <form onSubmit={handleSubmit}>
-                      {/* Name */}
+                      {/* Username */}
                       <div className="form-group mb-3">
-                        <label htmlFor="name">Name:</label>
+                        <label htmlFor="username">Username:</label>
                         <input
-                          className="form-control"
+                          className={`form-control ${errors.username ? 'is-invalid' : ''}`}
                           type="text"
-                          id="name"
-                          name="name"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          id="username"
+                          name="username"
+                          value={formData.username}
+                          onChange={handleChange}
                           required
                         />
+                        {errors.username && <div className="invalid-feedback">{errors.username}</div>}
                       </div>
 
                       {/* Email */}
                       <div className="form-group mb-3">
                         <label htmlFor="email">Email:</label>
                         <input
-                          className="form-control"
+                          className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                           type="email"
                           id="email"
                           name="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          value={formData.email}
+                          onChange={handleChange}
                           required
                         />
+                        {errors.email && <div className="invalid-feedback">{errors.email}</div>}
                       </div>
 
                       {/* Password */}
@@ -143,11 +196,11 @@ const RegisterModal = ({ show, onClose, onLoginOpen }) => {
                         <label htmlFor="password">Password:</label>
                         <input
                           type={showPassword ? 'text' : 'password'}
-                          className="form-control"
+                          className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                           id="password"
                           name="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          value={formData.password}
+                          onChange={handleChange}
                           required
                         />
                         <span
@@ -162,13 +215,33 @@ const RegisterModal = ({ show, onClose, onLoginOpen }) => {
                         >
                           {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </span>
+                        {errors.password && <div className="invalid-feedback">{errors.password}</div>}
                       </div>
 
-                      
+                      {/* Confirm Password */}
+                      <div className="form-group mb-3" style={{ position: 'relative' }}>
+                        <label htmlFor="confirmPassword">Confirm Password:</label>
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          required
+                        />
+                        {errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
+                      </div>
 
                       {/* Submit */}
                       <div className="mt-3">
-                        <button type="submit" className="ayur-btn">Register</button>
+                        <button 
+                          type="submit" 
+                          className="ayur-btn"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? 'Registering...' : 'Register'}
+                        </button>
                       </div>
                       {/* Login Link */}
                       <p className='mt-3'>Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onLoginOpen(); }}>Login</a></p>
@@ -177,7 +250,6 @@ const RegisterModal = ({ show, onClose, onLoginOpen }) => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
