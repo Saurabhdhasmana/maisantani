@@ -35,7 +35,7 @@ const Home = () => {
     const [attribute,setAttribute] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
-            let res = await fetch("https://mai-santani-backend-new.onrender.com/product/getAllProduct");
+            let res = await fetch("/api/product");
             let res1= await fetch("https://mai-santani-backend-new.onrender.com/attributes/getAllAttributes");
 
             res = await res.json();
@@ -136,7 +136,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="row">
-                        {home?.data?.products?.map((product) => (
+                        {home?.map((product) => (
 
                             <div className="col-lg-3 col-md-6 col-sm-6" key={product._id}>
                                 <div className="ayur-tpro-box">

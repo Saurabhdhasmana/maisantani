@@ -6,5 +6,14 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: ['jquery', 'select2']
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      }
+    }
   }
 });

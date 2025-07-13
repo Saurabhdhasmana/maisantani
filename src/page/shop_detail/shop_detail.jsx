@@ -86,11 +86,10 @@ const ShopDetail = ({ onAddToCart }) => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedVariant, setSelectedVariant] = useState(null);
 
-
   useEffect(() => {
     // Get product id from URL (assuming /shop-detail/:id)
     const id = window.location.pathname.split('/').pop();
-    fetch(`https://mai-santani-backend-new.onrender.com/product/product/${id}`)
+    fetch(`/api/product/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log('🎯 Product data is:', data);
@@ -112,8 +111,6 @@ const ShopDetail = ({ onAddToCart }) => {
         }
 
         setProduct(data);
-
-        
 
         // Process variants for colors and sizes
         if (data && Array.isArray(data.variants) && data.variants.length > 0) {
@@ -274,6 +271,7 @@ const ShopDetail = ({ onAddToCart }) => {
       });
   }, []);
 
+   console.log("product is",product);
   // Update selectedVariant when color/size changes
   useEffect(() => {
     if (product && Array.isArray(product.variants)) {
@@ -323,10 +321,30 @@ const ShopDetail = ({ onAddToCart }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
 
 
-  //Cart Modal State
 
-  //End Cart Modal State
+  // Combo Products State
+  const [comboProducts, setComboProducts] = useState([]);
+  useEffect(() => {
+    fetch("/api/combos")
+      .then((res) => res.json())
+      .then((data) => {
+        // Support both array and object response
+        if (Array.isArray(data)) {
+          setComboProducts(data);
+        } else if (Array.isArray(data.data)) {
+          setComboProducts(data.data);
+        } else if (Array.isArray(data.combos)) {
+          setComboProducts(data.combos);
+        } else {
+          setComboProducts([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching combos:", err);
+      });
+  }, []);
 
+console.log("combo", comboProducts);
 
   const scrollToSection = (ref) => {
     if (ref.current) {
@@ -429,7 +447,7 @@ const ShopDetail = ({ onAddToCart }) => {
                   >
                     <SwiperSlide key={0}>
                       <img
-                        src={`${product?.data?.productImage}`}
+                        src={product?.image ? `http://localhost:3000/images/uploads/${product.image}` : ''}
                         alt={`Product ${0}`}
                         style={{
                           borderRadius: '12px',
@@ -706,155 +724,6 @@ const ShopDetail = ({ onAddToCart }) => {
               </div>
             </div>
 
-            {/* <div className="col-lg-6 col-md-6 col-sm-12">
-                    <div className="ayur-shopsin-img">
-                        <img src="/src/assets/images/shop-single1.png" alt="image" />
-                    </div>
-                </div>
-                <div className="col-lg-6 col-md-6 col-sm-12">
-                    <div className="ayur-shopsin-details">
-                       
-                        <div className="ayur-shopsin-heaing">
-                            <h3>Black Organic Tea</h3>
-                            <div className="ayur-tpro-price">
-                                <p><del>$100</del>$50</p>
-                                <div className="ayur-tpro-star">
-                                    <img src="/src/assets/images/star-icon.png" alt="star" />
-                                    <img src="/src/assets/images/star-icon.png" alt="star" />
-                                    <img src="/src/assets/images/star-icon.png" alt="star" />
-                                    <img src="/src/assets/images/star-icon.png" alt="star" />
-                                    <img src="/src/assets/images/star-icon.png" alt="star" />
-                                    <p>(2 Customer Reviews)</p>
-                                </div>
-                            </div>
-                            
-                            <p>Black tea different from green tea is that during the production process, the tea leaves are allowed to fully oxidize before they are heat-processed and dried. During oxidation, oxygen interacts with the tea plant’s cell walls to turn the leaves the rich dark brown to black color that black tea leaves are famous for. Oxidation alters the flavor profile of a black tea as well, helping add malty, fruity or even smoky notes, depending on the tea.</p>
-                        </div>
-                        <div className="ayur-shopsin-quantity">
-                            <input type="number" className="form-control" value="1" min="1" max="3" />
-                            <button className="shop-add"><span></span></button>
-                            <button className="shop-sub"><span></span></button>
-                        </div>
-                        <div className="ayur-shopsin-btn">
-                            <a href="cart.html" className="ayur-btn">Add To Cart</a>
-                        </div>
-                    </div>
-                </div> */}
-
-            {/* <div className="col-lg-12 co-md-12 col-sm-12">
-              <div className="ayur-shopsin-tablist">
-                <div className="tab-content" id="myTabContent">
-                  <div
-                    className="tab-pane fade show active"
-                    id="nav-home"
-                    role="tabpanel"
-                    aria-labelledby="nav-home-tab"
-                    tabIndex="0"
-                  >
-                    <div className="ayur-product-desc mb-3">
-                      <h4 className="fw-bold">Long Description</h4>
-                      <p>
-                        There are many variations of passages of Lorem Ipsum
-                        available, but the majority have suffered alteration in
-                        some form, by injected humour, or randomised words which
-                        don't look even slightly believable. If you are going to
-                        use a passage of Lorem Ipsum, you need to be sure there
-                        isn't anything embarrassing hidden in the middle of
-                        text. All the Lorem Ipsum generators on the Internet
-                        tend to repeat predefined chunks as necessary, making
-                        this the first true generator on the Internet.
-                        <br />
-                        <br />
-                        Sed ut perspiciatis unde omnis iste natus error sit
-                        voluptatem accusantium doloremque laudantium, totam rem
-                        aperiam, eaque ipsa quae ab illo inventore veritatis et
-                        quasi architecto beatae vitae dicta sunt explicabo. Nemo
-                        enim ipsam voluptatem quia voluptas sit aspernatur aut
-                        odit aut fugit, sed quia consequuntur magni dolores eos
-                        qui ratione voluptatem sequi nesciunt. Neque porro
-                        quisquam est, qui dolorem ipsum quia dolor sit amet,
-                        consectetur, adipisci velit.
-                      </p>
-                      <div
-                        style={{
-                          display: 'flex',
-                          gap: '48px',
-                          flexWrap: 'wrap',
-                          marginTop: '32px',
-                          marginBottom: '16px',
-                          alignItems: 'flex-start',
-                        }}
-                      >
-                        <div
-                          className="pt-3"
-                          style={{ flex: 1, minWidth: 250 }}
-                        >
-                          <h5
-                            className="mb-2"
-                            style={{ fontWeight: 700, marginBottom: 12 }}
-                          >
-                            Features
-                          </h5>
-                          <ul
-                            style={{
-                              color: '#60748a',
-                              fontSize: 17,
-                              marginBottom: 0,
-                            }}
-                          >
-                            <li>Modern Art Deco Chaise Lounge</li>
-                            <li>Unique cylindrical design copper finish</li>
-                            <li>Covered in grey velvet fabric</li>
-                            <li>Modern Bookcase in Copper Colored Finish</li>
-                            <li>Use of Modern Materials</li>
-                            <li>Mirrored compartments and upgraded interior</li>
-                          </ul>
-                        </div>
-                        <div
-                          className="pt-3"
-                          style={{ flex: 1, minWidth: 250 }}
-                        >
-                          <h5
-                            className="mb-2"
-                            style={{ fontWeight: 700, marginBottom: 12 }}
-                          >
-                            Specifications
-                          </h5>
-                          <ul
-                            style={{
-                              color: '#60748a',
-                              fontSize: 17,
-                              marginBottom: 0,
-                            }}
-                          >
-                            <li>
-                              <strong>Dimensions:</strong> 4ft W x 7ft h
-                            </li>
-                            <li>
-                              <strong>Model Year:</strong> 2024
-                            </li>
-                            <li>
-                              <strong>Available Sizes:</strong> 8.5, 9.0, 9.5,
-                              10.0
-                            </li>
-                            <li>
-                              <strong>Manufacturer:</strong> Reebok Inc.
-                            </li>
-                            <li>
-                              <strong>Available Colors:</strong> White/Red/Blue,
-                              Black/Orange/Green
-                            </li>
-                            <li>
-                              <strong>Made In:</strong> USA
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
         <div className="ayur-bgshape ayur-shopsin">
@@ -1032,8 +901,7 @@ const ShopDetail = ({ onAddToCart }) => {
                       marginBottom: '20px',
                     }}
                   />
-                  {/* <h4 className="mt-3">{benefit.title}</h4>
-                    <p>{benefit.desc}</p> */}
+            
                 </div>
               </SwiperSlide>
             ))}
@@ -1279,243 +1147,130 @@ const ShopDetail = ({ onAddToCart }) => {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="ayur-tpro-box ayur-trepro-box">
-                <div className="ayur-tpro-img">
-                  <img src="/src/assets/images/Bottels/Ashwagandha.png" alt="img" />
-                  <div className="ayur-tpro-sale">
-                    <p>Sale</p>
-                    <div className="ayur-tpro-like">
-                      <a href="javascript:void(0)" className="ayur-tpor-click">
-                        <img
-                          src="/src/assets/images/like.svg"
-                          className="unlike"
-                        />
-                        <img
-                          src="/src/assets/images/like-fill.svg"
-                          className="like"
-                        />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="ayur-tpro-text">
-                  <h3>
-                    <a href="shop-single.html">Ashwagandha</a>
-                  </h3>
-                  <div className="ayur-tpro-price">
-                    <p>
-                      <del>$100</del>$50
-                    </p>
-                    <div className="ayur-tpro-star">
-                      <img src="/src/assets/images/star-icon.png" alt="star" />
-                      <p>4.5/5</p>
-                    </div>
-                  </div>
-
-                  <div className="ayur-tpro-btn">
-                    <a href="cart.html" className="ayur-btn">
-                      <span>
-                        <svg
-                          width="20"
-                          height="19"
-                          viewbox="0 0 20 19"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M0.826087 2.39643e-08C0.606995 2.39643e-08 0.396877 0.0870339 0.241955 0.241955C0.0870339 0.396877 0 0.606995 0 0.826087C0 1.04518 0.0870339 1.2553 0.241955 1.41022C0.396877 1.56514 0.606995 1.65217 0.826087 1.65217H2.29652C2.4166 1.65238 2.53358 1.69029 2.63096 1.76054C2.72834 1.8308 2.8012 1.92986 2.83926 2.04374L5.56287 10.2162C5.6843 10.5797 5.69917 10.9696 5.60665 11.3413L5.38278 12.2393C5.05317 13.5561 6.07835 14.8696 7.43478 14.8696H17.3478C17.5669 14.8696 17.777 14.7825 17.932 14.6276C18.0869 14.4727 18.1739 14.2626 18.1739 14.0435C18.1739 13.8244 18.0869 13.6143 17.932 13.4593C17.777 13.3044 17.5669 13.2174 17.3478 13.2174H7.43478C7.11261 13.2174 6.90609 12.953 6.98457 12.6416L7.15391 11.9659C7.18244 11.8516 7.24833 11.7501 7.34112 11.6775C7.43391 11.6049 7.54828 11.5654 7.66609 11.5652H16.5217C16.6953 11.5654 16.8646 11.511 17.0055 11.4095C17.1463 11.3081 17.2517 11.1649 17.3065 11.0002L19.508 4.39148C19.5494 4.26729 19.5607 4.13505 19.5409 4.00566C19.5211 3.87626 19.4709 3.75342 19.3943 3.64725C19.3178 3.54108 19.2171 3.45463 19.1005 3.39501C18.984 3.33539 18.855 3.30432 18.7241 3.30435H5.415C5.29478 3.30431 5.17762 3.26649 5.08007 3.19622C4.98253 3.12595 4.90954 3.0268 4.87143 2.91278L4.0883 0.565043C4.03349 0.400482 3.92828 0.257348 3.78757 0.15593C3.64686 0.0545128 3.4778 -4.17427e-05 3.30435 2.39643e-08H0.826087ZM6.6087 15.6957C6.17051 15.6957 5.75028 15.8697 5.44043 16.1796C5.13059 16.4894 4.95652 16.9096 4.95652 17.3478C4.95652 17.786 5.13059 18.2062 5.44043 18.5161C5.75028 18.8259 6.17051 19 6.6087 19C7.04688 19 7.46712 18.8259 7.77696 18.5161C8.0868 18.2062 8.26087 17.786 8.26087 17.3478C8.26087 16.9096 8.0868 16.4894 7.77696 16.1796C7.46712 15.8697 7.04688 15.6957 6.6087 15.6957ZM16.5217 15.6957C16.0836 15.6957 15.6633 15.8697 15.3535 16.1796C15.0436 16.4894 14.8696 16.9096 14.8696 17.3478C14.8696 17.786 15.0436 18.2062 15.3535 18.5161C15.6633 18.8259 16.0836 19 16.5217 19C16.9599 19 17.3802 18.8259 17.69 18.5161C17.9998 18.2062 18.1739 17.786 18.1739 17.3478C18.1739 16.9096 17.9998 16.4894 17.69 16.1796C17.3802 15.8697 16.9599 15.6957 16.5217 15.6957Z"
-                            fill="white"
-                          ></path>
-                        </svg>
-                      </span>
-                      Add to Cart
-                    </a>
-                  </div>
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-12 col-md-12 col-sm-12">
+                <div className="ayur-heading-wrap">
+                  <h3>Combo Products</h3>
                 </div>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="ayur-tpro-box ayur-trepro-box">
-                <div className="ayur-tpro-img">
-                  <img src="/src/assets/images/Bottels/Women care.png" alt="img" />
-                  <div className="ayur-tpro-sale ayur-tpro-sale-off">
-                    <p>30% Off</p>
-                    <div className="ayur-tpro-like">
-                      <a href="javascript:void(0)" className="ayur-tpor-click">
-                        <img
-                          src="/src/assets/images/like.svg"
-                          className="unlike"
-                        />
-                        <img
-                          src="/src/assets/images/like-fill.svg"
-                          className="like"
-                        />
-                      </a>
+            <div className="row">
+              {(() => {
+                // Show all products in a combo if any comboProducts item matches product._id
+                const currentProductId = (product?._id || product?.data?._id)?.toString();
+                const shownComboIds = new Set();
+                const combosToShow = comboProducts.filter(combo => {
+                  if (!Array.isArray(combo.comboProducts)) return false;
+                  // If any item in combo.comboProducts matches product._id, show this combo (once)
+                  const match = combo.comboProducts.some(item => {
+                    const itemId = (item._id || item.id || item)?.toString();
+                    return itemId === currentProductId;
+                  });
+                  if (match && !shownComboIds.has(combo._id?.toString())) {
+                    shownComboIds.add(combo._id?.toString());
+                    return true;
+                  }
+                  return false;
+                });
+                if (combosToShow.length === 0) {
+                  return <div style={{ padding: "2rem", textAlign: "center" }}>No combos found for this product.</div>;
+                }
+                return combosToShow.map((combo) => {
+                  // For each combo, show all products in a flex row, Add Combo to Cart button at the end
+                  const shownProductIds = new Set();
+                  const productsToShow = Array.isArray(combo.comboProducts)
+                    ? combo.comboProducts.filter((prod) => {
+                        const prodId = (prod._id || prod.id || prod)?.toString();
+                        if (shownProductIds.has(prodId)) return false;
+                        shownProductIds.add(prodId);
+                        return true;
+                      })
+                    : [];
+                  return (
+                    <div className="col-lg-12 col-md-12 col-sm-12" key={combo._id || combo.id}>
+                      <div className="ayur-tpro-box ayur-trepro-box" style={{ marginBottom: '32px', padding: '24px', borderRadius: '12px', boxShadow: '0 2px 12px #eee' }}>
+                        <div className="ayur-tpro-text">
+                          <h4 style={{ marginBottom: '18px', fontWeight: 700 }}>{combo.name}</h4>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', marginBottom: '18px' }}>
+                            {productsToShow.length > 0 ? (
+                              productsToShow.map((prod, idx) => {
+                                const prodId = (prod._id || prod.id || prod)?.toString();
+                                // Prefer prod.image, then prod.productImage, fallback to no-image
+                                let imgSrc = '/src/assets/images/no-image.png';
+                                if (prod.image) {
+                                  imgSrc = `http://localhost:3000/images/uploads/${prod.image}`;
+                                } else if (prod.productImage) {
+                                  imgSrc = `/images/uploads/${prod.productImage}`;
+                                }
+                                // Use prod.salePrice and prod.mrpPrice for price display (case-sensitive)
+                                return (
+                                  <div key={prodId || idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 120, maxWidth: 160, background: '#fafafa', borderRadius: '8px', padding: '12px 8px', boxShadow: '0 1px 6px #eee' }}>
+                                    <img src={imgSrc} alt={prod.name} style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: '6px', marginBottom: 8 }} />
+                                    <span style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{prod.name}</span>
+                                    <span style={{ color: '#60748a', fontSize: 14, marginBottom: 4 }}>
+                                      {typeof prod.salePrice !== 'undefined' && prod.salePrice !== null ? (
+                                        <>
+                                          ₹{prod.salePrice}
+                                          {prod.mrpPrice && (
+                                            <del style={{ fontSize: '13px', color: '#b0b0b0', marginLeft: 6 }}>₹{prod.mrpPrice}</del>
+                                          )}
+                                        </>
+                                      ) : prod.mrpPrice ? (
+                                        <>₹{prod.mrpPrice}</>
+                                      ) : (
+                                        <>No price</>
+                                      )}
+                                    </span>
+                                  </div>
+                                );
+                              })
+                            ) : (
+                              <div style={{ color: '#888', fontSize: 16 }}>No products in this combo.</div>
+                            )}
+                          </div>
+                          <div style={{ textAlign: 'right', marginTop: '12px' }}>
+                            <button
+                              className="ayur-btn"
+                              style={{ minWidth: 180, fontSize: 16, fontWeight: 600, borderRadius: '8px', padding: '10px 24px' }}
+                              onClick={() => {
+                                // Add all products in this combo to cart (only once per product)
+                                productsToShow.forEach((prod) => {
+                                  const prodId = (prod._id || prod.id || prod)?.toString();
+                                  // Use salePrice and mrpPrice for price (case-sensitive)
+                                  let price = null;
+                                  if (typeof prod.salePrice !== 'undefined' && prod.salePrice !== null) {
+                                    price = prod.salePrice;
+                                  } else if (typeof prod.mrpPrice !== 'undefined' && prod.mrpPrice !== null) {
+                                    price = prod.mrpPrice;
+                                  }
+                                  onAddToCart({
+                                    id: prodId,
+                                    name: prod.name,
+                                    price: price,
+                                    image: prod.image || prod.productImage,
+                                    qty: 1,
+                                  });
+                                });
+                              }}
+                            >
+                              Add Combo to Cart
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="ayur-tpro-text">
-                  <h3>
-                    <a href="shop-single.html">Women care</a>
-                  </h3>
-                  <div className="ayur-tpro-price">
-                    <p>
-                      <del>$100</del>$50
-                    </p>
-                    <div className="ayur-tpro-star">
-                      <img src="/src/assets/images/star-icon.png" alt="star" />
-                      <p>4.5/5</p>
-                    </div>
-                  </div>
-                  <div className="ayur-tpro-btn">
-                    <a href="cart.html" className="ayur-btn">
-                      <span>
-                        <svg
-                          width="20"
-                          height="19"
-                          viewbox="0 0 20 19"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M0.826087 2.39643e-08C0.606995 2.39643e-08 0.396877 0.0870339 0.241955 0.241955C0.0870339 0.396877 0 0.606995 0 0.826087C0 1.04518 0.0870339 1.2553 0.241955 1.41022C0.396877 1.56514 0.606995 1.65217 0.826087 1.65217H2.29652C2.4166 1.65238 2.53358 1.69029 2.63096 1.76054C2.72834 1.8308 2.8012 1.92986 2.83926 2.04374L5.56287 10.2162C5.6843 10.5797 5.69917 10.9696 5.60665 11.3413L5.38278 12.2393C5.05317 13.5561 6.07835 14.8696 7.43478 14.8696H17.3478C17.5669 14.8696 17.777 14.7825 17.932 14.6276C18.0869 14.4727 18.1739 14.2626 18.1739 14.0435C18.1739 13.8244 18.0869 13.6143 17.932 13.4593C17.777 13.3044 17.5669 13.2174 17.3478 13.2174H7.43478C7.11261 13.2174 6.90609 12.953 6.98457 12.6416L7.15391 11.9659C7.18244 11.8516 7.24833 11.7501 7.34112 11.6775C7.43391 11.6049 7.54828 11.5654 7.66609 11.5652H16.5217C16.6953 11.5654 16.8646 11.511 17.0055 11.4095C17.1463 11.3081 17.2517 11.1649 17.3065 11.0002L19.508 4.39148C19.5494 4.26729 19.5607 4.13505 19.5409 4.00566C19.5211 3.87626 19.4709 3.75342 19.3943 3.64725C19.3178 3.54108 19.2171 3.45463 19.1005 3.39501C18.984 3.33539 18.855 3.30432 18.7241 3.30435H5.415C5.29478 3.30431 5.17762 3.26649 5.08007 3.19622C4.98253 3.12595 4.90954 3.0268 4.87143 2.91278L4.0883 0.565043C4.03349 0.400482 3.92828 0.257348 3.78757 0.15593C3.64686 0.0545128 3.4778 -4.17427e-05 3.30435 2.39643e-08H0.826087ZM6.6087 15.6957C6.17051 15.6957 5.75028 15.8697 5.44043 16.1796C5.13059 16.4894 4.95652 16.9096 4.95652 17.3478C4.95652 17.786 5.13059 18.2062 5.44043 18.5161C5.75028 18.8259 6.17051 19 6.6087 19C7.04688 19 7.46712 18.8259 7.77696 18.5161C8.0868 18.2062 8.26087 17.786 8.26087 17.3478C8.26087 16.9096 8.0868 16.4894 7.77696 16.1796C7.46712 15.8697 7.04688 15.6957 6.6087 15.6957ZM16.5217 15.6957C16.0836 15.6957 15.6633 15.8697 15.3535 16.1796C15.0436 16.4894 14.8696 16.9096 14.8696 17.3478C14.8696 17.786 15.0436 18.2062 15.3535 18.5161C15.6633 18.8259 16.0836 19 16.5217 19C16.9599 19 17.3802 18.8259 17.69 18.5161C17.9998 18.2062 18.1739 17.786 18.1739 17.3478C18.1739 16.9096 17.9998 16.4894 17.69 16.1796C17.3802 15.8697 16.9599 15.6957 16.5217 15.6957Z"
-                            fill="white"
-                          ></path>
-                        </svg>
-                      </span>
-                      Add to Cart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="ayur-tpro-box ayur-trepro-box">
-                <div className="ayur-tpro-img">
-                  <img src="/src/assets/images/Bottels/Shilajeet.png" alt="img" />
-                  <div className="ayur-tpro-sale ayur-tpro-sale-star">
-                    <div className="ayur-tpro-like">
-                      <a href="javascript:void(0)" className="ayur-tpor-click">
-                        <img
-                          src="/src/assets/images/like.svg"
-                          className="unlike"
-                        />
-                        <img
-                          src="/src/assets/images/like-fill.svg"
-                          className="like"
-                        />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="ayur-tpro-text">
-                  <h3>
-                    <a href="shop-single.html">Shilajeet</a>
-                  </h3>
-                  <div className="ayur-tpro-price">
-                    <p>
-                      <del>$100</del>$50
-                    </p>
-                    <div className="ayur-tpro-star">
-                      <img src="/src/assets/images/star-icon.png" alt="star" />
-                      <p>4.5/5</p>
-                    </div>
-                  </div>
-                  <div className="ayur-tpro-btn">
-                    <a href="cart.html" className="ayur-btn">
-                      <span>
-                        <svg
-                          width="20"
-                          height="19"
-                          viewbox="0 0 20 19"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M0.826087 2.39643e-08C0.606995 2.39643e-08 0.396877 0.0870339 0.241955 0.241955C0.0870339 0.396877 0 0.606995 0 0.826087C0 1.04518 0.0870339 1.2553 0.241955 1.41022C0.396877 1.56514 0.606995 1.65217 0.826087 1.65217H2.29652C2.4166 1.65238 2.53358 1.69029 2.63096 1.76054C2.72834 1.8308 2.8012 1.92986 2.83926 2.04374L5.56287 10.2162C5.6843 10.5797 5.69917 10.9696 5.60665 11.3413L5.38278 12.2393C5.05317 13.5561 6.07835 14.8696 7.43478 14.8696H17.3478C17.5669 14.8696 17.777 14.7825 17.932 14.6276C18.0869 14.4727 18.1739 14.2626 18.1739 14.0435C18.1739 13.8244 18.0869 13.6143 17.932 13.4593C17.777 13.3044 17.5669 13.2174 17.3478 13.2174H7.43478C7.11261 13.2174 6.90609 12.953 6.98457 12.6416L7.15391 11.9659C7.18244 11.8516 7.24833 11.7501 7.34112 11.6775C7.43391 11.6049 7.54828 11.5654 7.66609 11.5652H16.5217C16.6953 11.5654 16.8646 11.511 17.0055 11.4095C17.1463 11.3081 17.2517 11.1649 17.3065 11.0002L19.508 4.39148C19.5494 4.26729 19.5607 4.13505 19.5409 4.00566C19.5211 3.87626 19.4709 3.75342 19.3943 3.64725C19.3178 3.54108 19.2171 3.45463 19.1005 3.39501C18.984 3.33539 18.855 3.30432 18.7241 3.30435H5.415C5.29478 3.30431 5.17762 3.26649 5.08007 3.19622C4.98253 3.12595 4.90954 3.0268 4.87143 2.91278L4.0883 0.565043C4.03349 0.400482 3.92828 0.257348 3.78757 0.15593C3.64686 0.0545128 3.4778 -4.17427e-05 3.30435 2.39643e-08H0.826087ZM6.6087 15.6957C6.17051 15.6957 5.75028 15.8697 5.44043 16.1796C5.13059 16.4894 4.95652 16.9096 4.95652 17.3478C4.95652 17.786 5.13059 18.2062 5.44043 18.5161C5.75028 18.8259 6.17051 19 6.6087 19C7.04688 19 7.46712 18.8259 7.77696 18.5161C8.0868 18.2062 8.26087 17.786 8.26087 17.3478C8.26087 16.9096 8.0868 16.4894 7.77696 16.1796C7.46712 15.8697 7.04688 15.6957 6.6087 15.6957ZM16.5217 15.6957C16.0836 15.6957 15.6633 15.8697 15.3535 16.1796C15.0436 16.4894 14.8696 16.9096 14.8696 17.3478C14.8696 17.786 15.0436 18.2062 15.3535 18.5161C15.6633 18.8259 16.0836 19 16.5217 19C16.9599 19 17.3802 18.8259 17.69 18.5161C17.9998 18.2062 18.1739 17.786 18.1739 17.3478C18.1739 16.9096 17.9998 16.4894 17.69 16.1796C17.3802 15.8697 16.9599 15.6957 16.5217 15.6957Z"
-                            fill="white"
-                          ></path>
-                        </svg>
-                      </span>
-                      Add to Cart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="ayur-tpro-box ayur-trepro-box">
-                <div className="ayur-tpro-img">
-                  <img src="/src/assets/images/Bottels/Triphla.png" alt="img" />
-                  <div className="ayur-tpro-sale ayur-tpro-sale-star">
-                    <div className="ayur-tpro-like">
-                      <a href="javascript:void(0)" className="ayur-tpor-click">
-                        <img
-                          src="/src/assets/images/like.svg"
-                          className="unlike"
-                        />
-                        <img
-                          src="/src/assets/images/like-fill.svg"
-                          className="like"
-                        />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div className="ayur-tpro-text">
-                  <h3>
-                    <a href="shop-single.html">Triphla</a>
-                  </h3>
-                  <div className="ayur-tpro-price">
-                    <p>
-                      <del>$100</del>$50
-                    </p>
-                    <div className="ayur-tpro-star">
-                      <img src="/src/assets/images/star-icon.png" alt="star" />
-                      <p>4.5/5</p>
-                    </div>
-                  </div>
-
-                  <div className="ayur-tpro-btn">
-                    <a href="cart.html" className="ayur-btn">
-                      <span>
-                        <svg
-                          width="20"
-                          height="19"
-                          viewbox="0 0 20 19"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M0.826087 2.39643e-08C0.606995 2.39643e-08 0.396877 0.0870339 0.241955 0.241955C0.0870339 0.396877 0 0.606995 0 0.826087C0 1.04518 0.0870339 1.2553 0.241955 1.41022C0.396877 1.56514 0.606995 1.65217 0.826087 1.65217H2.29652C2.4166 1.65238 2.53358 1.69029 2.63096 1.76054C2.72834 1.8308 2.8012 1.92986 2.83926 2.04374L5.56287 10.2162C5.6843 10.5797 5.69917 10.9696 5.60665 11.3413L5.38278 12.2393C5.05317 13.5561 6.07835 14.8696 7.43478 14.8696H17.3478C17.5669 14.8696 17.777 14.7825 17.932 14.6276C18.0869 14.4727 18.1739 14.2626 18.1739 14.0435C18.1739 13.8244 18.0869 13.6143 17.932 13.4593C17.777 13.3044 17.5669 13.2174 17.3478 13.2174H7.43478C7.11261 13.2174 6.90609 12.953 6.98457 12.6416L7.15391 11.9659C7.18244 11.8516 7.24833 11.7501 7.34112 11.6775C7.43391 11.6049 7.54828 11.5654 7.66609 11.5652H16.5217C16.6953 11.5654 16.8646 11.511 17.0055 11.4095C17.1463 11.3081 17.2517 11.1649 17.3065 11.0002L19.508 4.39148C19.5494 4.26729 19.5607 4.13505 19.5409 4.00566C19.5211 3.87626 19.4709 3.75342 19.3943 3.64725C19.3178 3.54108 19.2171 3.45463 19.1005 3.39501C18.984 3.33539 18.855 3.30432 18.7241 3.30435H5.415C5.29478 3.30431 5.17762 3.26649 5.08007 3.19622C4.98253 3.12595 4.90954 3.0268 4.87143 2.91278L4.0883 0.565043C4.03349 0.400482 3.92828 0.257348 3.78757 0.15593C3.64686 0.0545128 3.4778 -4.17427e-05 3.30435 2.39643e-08H0.826087ZM6.6087 15.6957C6.17051 15.6957 5.75028 15.8697 5.44043 16.1796C5.13059 16.4894 4.95652 16.9096 4.95652 17.3478C4.95652 17.786 5.13059 18.2062 5.44043 18.5161C5.75028 18.8259 6.17051 19 6.6087 19C7.04688 19 7.46712 18.8259 7.77696 18.5161C8.0868 18.2062 8.26087 17.786 8.26087 17.3478C8.26087 16.9096 8.0868 16.4894 7.77696 16.1796C7.46712 15.8697 7.04688 15.6957 6.6087 15.6957ZM16.5217 15.6957C16.0836 15.6957 15.6633 15.8697 15.3535 16.1796C15.0436 16.4894 14.8696 16.9096 14.8696 17.3478C14.8696 17.786 15.0436 18.2062 15.3535 18.5161C15.6633 18.8259 16.0836 19 16.5217 19C16.9599 19 17.3802 18.8259 17.69 18.5161C17.9998 18.2062 18.1739 17.786 18.1739 17.3478C18.1739 16.9096 17.9998 16.4894 17.69 16.1796C17.3802 15.8697 16.9599 15.6957 16.5217 15.6957Z"
-                            fill="white"
-                          ></path>
-                        </svg>
-                      </span>
-                      Add to Cart
-                    </a>
-                  </div>
-                </div>
-              </div>
+                  );
+                });
+              })()}
             </div>
           </div>
-        </div>
-        <div className="ayur-bgshape ayur-trenpro-bgshape">
-          <img src="/src/assets/images/bg-shape3.png" alt="img" />
-          <img src="/src/assets/images/bg-leaf3.png" alt="img" />
+          <div className="ayur-bgshape ayur-trenpro-bgshape">
+            <img src="/src/assets/images/bg-shape3.png" alt="img" />
+            <img src="/src/assets/images/bg-leaf3.png" alt="img" />
+          </div>
         </div>
       </div>
-
-      {/* <CartModal
-        show={showCartModal}
-        onClose={() => setShowCartModal(false)}
-        cartItems={cartItems}
-        onRemove={handleRemoveItem}
-        onQtyChange={handleQtyChange}
-      />
-       */}
     </div>
   );
 };
