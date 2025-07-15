@@ -139,11 +139,12 @@ const Home = () => {
                         {home?.map((product) => (
 
                             <div className="col-lg-3 col-md-6 col-sm-6" key={product._id}>
-                                <div className="ayur-tpro-box">
-                                    <div className="ayur-tpro-img">
-                                        <img
-                                            src={product.productImage
-                                                ? product.productImage
+                                <Link to={`/shop-detail/${product._id}`}>
+                                    <div className="ayur-tpro-box">
+                                        <div className="ayur-tpro-img">
+                                            <img
+                                                src={product.image
+                                                    ? `http://localhost:3000/images/uploads/${product.image}`
                                                 : "/src/assets/images/Bottels/Ashwagandha.png"
                                             }
                                             alt="img"
@@ -180,6 +181,7 @@ const Home = () => {
                                         </div>
                                     </div>
                                 </div>
+                </Link>
                             </div>
 
                         ))}

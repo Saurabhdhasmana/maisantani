@@ -730,6 +730,215 @@ console.log("combo", comboProducts);
           <img src="/src/assets/images/bg-shape1.png" alt="img" />
         </div>
       </div>
+       
+     <div className="container">
+            <div className="row">
+              <div className="col-lg-12 col-md-12 col-sm-12">
+                <div className="ayur-heading-wrap">
+                 
+                </div>
+              </div>
+            </div>
+
+             <div className="row">
+              {(() => {
+                // Show all products in a combo if any comboProducts item matches product._id
+                const currentProductId = (product?._id || product?.data?._id)?.toString();
+                const shownComboIds = new Set();
+                const combosToShow = comboProducts.filter(combo => {
+                  if (!Array.isArray(combo.comboProducts)) return false;
+                  // If any item in combo.comboProducts matches product._id, show this combo (once)
+                  const match = combo.comboProducts.some(item => {
+                    const itemId = (item._id || item.id || item)?.toString();
+                    return itemId === currentProductId;
+                  });
+                  if (match && !shownComboIds.has(combo._id?.toString())) {
+                    shownComboIds.add(combo._id?.toString());
+                    return true;
+                  }
+                  return false;
+                });
+                if (combosToShow.length === 0) {
+                  return <div style={{ padding: "2rem", textAlign: "center" }}>No combos found for this product.</div>;
+                }
+                return combosToShow.map((combo) => {
+                  // For each combo, show all products in a flex row, Add Combo to Cart button at the end
+                  const shownProductIds = new Set();
+                  const productsToShow = Array.isArray(combo.comboProducts)
+                    ? combo.comboProducts.filter((prod) => {
+                        const prodId = (prod._id || prod.id || prod)?.toString();
+                        if (shownProductIds.has(prodId)) return false;
+                        shownProductIds.add(prodId);
+                        return true;
+                      })
+                    : [];
+                  return (
+                    <div className="col-lg-12 col-md-12 col-sm-12" key={combo._id || combo.id}>
+                      <div className="ayur-tpro-box ayur-trepro-box" style={{ marginBottom: '32px', padding: '24px', borderRadius: '12px', boxShadow: '0 2px 12px #eee' }}>
+                        <div className="ayur-tpro-text">
+                          <h4 style={{ marginBottom: '18px', fontWeight: 700 }}>Combo Products</h4>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px', alignItems: 'center', marginBottom: '18px' }}>
+                            {productsToShow.length > 0 ? (
+  <>
+    {productsToShow.map((prod, idx) => {
+      const prodId = (prod._id || prod.id || prod)?.toString();
+      // Prefer prod.image, then prod.productImage, fallback to no-image
+      let imgSrc = '/src/assets/images/no-image.png';
+      if (prod.image) {
+        imgSrc = `http://localhost:3000/images/uploads/${prod.image}`;
+      } else if (prod.productImage) {
+        imgSrc = `/images/uploads/${prod.productImage}`;
+      }
+      // Price logic: show only if valid number
+      const sale = Number(prod.salePrice);
+      const mrp = Number(prod.mrpPrice);
+      const hasSale = !isNaN(sale) && sale > 0;
+      const hasMrp = !isNaN(mrp) && mrp > 0;
+      const showDiscount = hasSale && hasMrp && sale < mrp;
+      let discountPercent = 0;
+      if (showDiscount) {
+        // Use Math.floor to avoid rounding up small discounts to 1%
+        discountPercent = Math.floor(((mrp - sale) / mrp) * 100);
+        // If discount is at least 1 but less than 1.5, show 1%
+        if (discountPercent === 0 && (mrp - sale) > 0) {
+          discountPercent = 1;
+        }
+      }
+      return (
+        <React.Fragment key={prodId || idx}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 120, maxWidth: 160, background: '#fafafa', borderRadius: '8px', padding: '12px 8px', boxShadow: '0 1px 6px #eee' }}>
+            <img src={imgSrc} alt={prod.name} style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: '6px', marginBottom: 8 }} />
+            <span style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{prod.name}</span>
+            <span style={{ color: '#60748a', fontSize: 14, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+              {hasSale ? (
+                <>
+                  ₹{sale.toFixed(2)}
+                  {hasMrp && (
+                    <del style={{ fontSize: '13px', color: '#b0b0b0', marginLeft: 4 }}>₹{mrp.toFixed(2)}</del>
+                  )}
+                  {showDiscount && (
+                    <span style={{ background: '#ff4d4f', color: '#fff', borderRadius: 8, padding: '2px 8px', fontWeight: 600, fontSize: 13, marginLeft: 4 }}>{discountPercent}%</span>
+                  )}
+                </>
+              ) : hasMrp ? (
+                <>
+                  ₹{mrp.toFixed(2)}
+                </>
+              ) : (
+                <span style={{ color: '#b0b0b0' }}>Contact for price</span>
+              )}
+            </span>
+          </div>
+          {/* Add + between products except last */}
+          {idx < productsToShow.length - 1 && (
+            <span style={{ fontSize: 28, fontWeight: 700, color: '#222', margin: '0 12px' }}>+</span>
+          )}
+        </React.Fragment>
+      );
+    })}
+               <span style={{ fontSize: 28, fontWeight: 700, color: '#222', margin: '0 12px' }}>=</span>
+    {/* Total price and button at the end of the row */}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minWidth: 220, maxWidth: 260, background: 'transparent', borderRadius: 0, padding: 0, boxShadow: 'none', height: '100%' }}>
+      {/* Calculate total price for combo */}
+      {(() => {
+        let totalSale = 0, totalMrp = 0, validCount = 0;
+        productsToShow.forEach(prod => {
+          const sale = Number(prod.salePrice);
+          const mrp = Number(prod.mrpPrice);
+          if (!isNaN(sale) && sale > 0) {
+            totalSale += sale;
+            validCount++;
+          } else if (!isNaN(mrp) && mrp > 0) {
+            totalSale += mrp;
+            validCount++;
+          }
+          if (!isNaN(mrp) && mrp > 0) {
+            totalMrp += mrp;
+          } else if (!isNaN(sale) && sale > 0) {
+            totalMrp += sale;
+          }
+        });
+        let discountPercent = 0;
+        if (totalMrp && totalSale < totalMrp) {
+          discountPercent = Math.floor(((totalMrp - totalSale) / totalMrp) * 100);
+          if (discountPercent === 0 && (totalMrp - totalSale) > 0) {
+            discountPercent = 1;
+          }
+        }
+        return (
+          <>
+            <div style={{ fontWeight: 600, fontSize: 18, marginBottom: 8 }}>Total price:</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+              {validCount > 0 ? (
+                <>
+                  <span style={{ fontSize: 22, fontWeight: 700, color: '#222' }}>₹{totalSale.toFixed(2)}</span>
+                  {totalMrp > totalSale && (
+                    <del style={{ fontSize: 16, color: '#b0b0b0' }}>₹{totalMrp.toFixed(2)}</del>
+                  )}
+                  {discountPercent > 0 && (
+                    <span style={{ background: '#ff4d4f', color: '#fff', borderRadius: 8, padding: '2px 8px', fontWeight: 600, fontSize: 13 }}>{discountPercent}% OFF</span>
+                  )}
+                </>
+              ) : (
+                <span style={{ color: '#b0b0b0' }}>Contact for price</span>
+              )}
+            </div>
+          </>
+        );
+      })()}
+
+      <button
+        className="ayur-btn ayur-con-btn h-25 w-100"
+ 
+        onClick={() => {
+          // Add all products in this combo to cart (only once per product)
+          productsToShow.forEach((prod) => {
+            const prodId = (prod._id || prod.id || prod)?.toString();
+            // Use salePrice and mrpPrice for price (case-sensitive)
+            let price = null;
+            if (typeof prod.salePrice !== 'undefined' && prod.salePrice !== null) {
+              price = prod.salePrice;
+            } else if (typeof prod.mrpPrice !== 'undefined' && prod.mrpPrice !== null) {
+              price = prod.mrpPrice;
+            }
+
+              let imageUrl = '';
+     if (prod.image) {
+      imageUrl = `http://localhost:3000/images/uploads/${prod.image}`;
+    } else if (prod.productImage) {
+      imageUrl = prod.productImage.startsWith('http')
+        ? prod.productImage
+        : `/images/uploads/${prod.productImage}`;
+    }  
+
+            onAddToCart({
+              id: prodId,
+              name: prod.name,
+              price: price,
+              image: imageUrl,
+              qty: 1,
+            });
+          });
+        }}
+      >
+
+
+        Add Combo to Cart
+      </button>
+    </div>
+  </>
+                            ) : (
+                              <div style={{ color: '#888', fontSize: 16 }}>No products in this combo.</div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div> 
+          </div>
 
       <div>
         <div className="my-4 sticky-nav-wrapper">
@@ -1147,15 +1356,9 @@ console.log("combo", comboProducts);
               </div>
             </div>
           </div>
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-12 col-md-12 col-sm-12">
-                <div className="ayur-heading-wrap">
-                  <h3>Combo Products</h3>
-                </div>
-              </div>
-            </div>
-            <div className="row">
+
+         
+           {/*  <div className="row">
               {(() => {
                 // Show all products in a combo if any comboProducts item matches product._id
                 const currentProductId = (product?._id || product?.data?._id)?.toString();
@@ -1263,8 +1466,8 @@ console.log("combo", comboProducts);
                   );
                 });
               })()}
-            </div>
-          </div>
+            </div> */}
+         
           <div className="ayur-bgshape ayur-trenpro-bgshape">
             <img src="/src/assets/images/bg-shape3.png" alt="img" />
             <img src="/src/assets/images/bg-leaf3.png" alt="img" />
